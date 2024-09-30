@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PostalCode {
+  id              Int                      @id @default(autoincrement())
+  code            String                   @db.VarChar(10)
+  country_code    String                   @db.VarChar(2)
+  geom            Unsupported("geometry")?
+  land_area       Decimal?                 @db.Decimal(18, 4)
+  geom_simplified Unsupported("geometry")?
+
+  @@unique([code, country_code], map: "code_country_unique")
+  @@index([code], map: "idx_code")
+  @@index([code, country_code], map: "idx_code_country")
+  @@map("postal_code")
+}
